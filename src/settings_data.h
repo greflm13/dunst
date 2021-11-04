@@ -172,7 +172,7 @@ static const struct string_to_enum_def boolean_enum_data[] = {
         {"no", false },
         {"0", false },
         {"n", false },
-        {"y", false },
+        {"y", true },
         {"N", false },
         {"Y", true },
         ENUM_END,
@@ -1049,15 +1049,48 @@ static const struct setting allowed_settings[] = {
                 .parser_data = NULL,
         },
         {
-                .name = "frame_width",
+                .name = "left_frame_width",
                 .section = "global",
                 .description = "Width of frame around the window",
                 .type = TYPE_INT,
                 .default_value = "3",
-                .value = &settings.frame_width,
+                .value = &settings.left_frame_width,
                 .parser = NULL,
                 .parser_data = NULL,
         },
+        {
+                .name = "right_frame_width",
+                .section = "global",
+                .description = "Width of frame around the window",
+                .type = TYPE_INT,
+                .default_value = "3",
+                .value = &settings.right_frame_width,
+                .parser = NULL,
+                .parser_data = NULL,
+        },
+
+        {
+                .name = "top_frame_width",
+                .section = "global",
+                .description = "Width of frame around the window",
+                .type = TYPE_INT,
+                .default_value = "3",
+                .value = &settings.top_frame_width,
+                .parser = NULL,
+                .parser_data = NULL,
+        },
+
+        {
+                .name = "bottom_frame_width",
+                .section = "global",
+                .description = "Width of frame around the window",
+                .type = TYPE_INT,
+                .default_value = "3",
+                .value = &settings.bottom_frame_width,
+                .parser = NULL,
+                .parser_data = NULL,
+        },
+
 
         // These are only used for setting defaults, since there is a rule
         // above doing the same.

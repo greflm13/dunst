@@ -241,7 +241,8 @@ static struct dimensions calculate_dimensions(GSList *layouts)
         struct dimensions dim = { 0 };
         double scale = output->get_scale();
 
-        dim.h += 2 * settings.frame_width;
+        dim.h += settings.top_frame_width;
+        dim.h += settings.bottom_frame_width;
         dim.h += (g_slist_length(layouts) - 1) * settings.separator_height;
 
         dim.corner_radius = settings.corner_radius;
@@ -251,10 +252,11 @@ static struct dimensions calculate_dimensions(GSList *layouts)
                 struct dimensions n_dim = calculate_notification_dimensions(cl, scale);
                 dim.h += n_dim.h;
                 LOG_D("Notification dimensions %ix%i", n_dim.w, n_dim.h);
-                dim.w = MAX(dim.w, n_dim.w + settings.frame_width);
+                dim.w = MAX(dim.w, n_dim.w + MAX(settings.left_frame_width, settings.right_frame_width));
         }
 
-        dim.w += 2 * settings.frame_width;
+        dim.w += settings.left_frame_width;
+        dim.w += settings.right_frame_width;
         dim.corner_radius = MIN(dim.corner_radius, dim.h/2);
         return dim;
 }
@@ -504,29 +506,30 @@ static cairo_surface_t *render_background(cairo_surface_t *srf,
         cairo_set_operator(c, CAIRO_OPERATOR_ADD);
 
         if (first)
-                height += settings.frame_width;
+                height += settings.top_frame_width;
         if (last)
-                height += settings.frame_width;
+                height += settings.bottom_frame_width;
         else
                 height += settings.separator_height;
 
         draw_rounded_rect(c, x, y, width, height, corner_radius, scale, first, last);
 
         /* adding frame */
-        x += settings.frame_width;
+        x += settings.left_frame_width;
         if (first) {
-                y += settings.frame_width;
-                height -= settings.frame_width;
+                y += settings.top_frame_width;
+                height -= settings.top_frame_width;
         }
 
-        width -= 2 * settings.frame_width;
+        width -= settings.left_frame_width;
+        width -= settings.right_frame_width;
 
         if (last)
-                height -= settings.frame_width;
+                height -= settings.bottom_frame_width;
         else
                 height -= settings.separator_height;
 
-        radius_int = frame_internal_radius(corner_radius, settings.frame_width, height);
+        radius_int = frame_internal_radius(corner_radius, settings.left_frame_width, height);
 
         draw_rounded_rect(c, x, y, width, height, radius_int, scale, first, last);
         cairo_set_source_rgba(c, cl->frame.r, cl->frame.g, cl->frame.b, cl->frame.a);
@@ -544,7 +547,7 @@ static cairo_surface_t *render_background(cairo_surface_t *srf,
                 struct color sep_color = layout_get_sepcolor(cl, cl_next);
                 cairo_set_source_rgba(c, sep_color.r, sep_color.g, sep_color.b, sep_color.a);
 
-                draw_rect(c, settings.frame_width, y + height, width, settings.separator_height, scale);
+                draw_rect(c, settings.left_frame_width, y + height, width, settings.separator_height, scale);
 
                 cairo_fill(c);
         }
@@ -690,7 +693,7 @@ static struct dimensions layout_render(cairo_surface_t *srf,
 
         /* adding frame */
         if (first)
-                dim.y += settings.frame_width;
+                dim.y += settings.top_frame_width;
 
         if (!last)
                 dim.y += settings.separator_height;

@@ -118,7 +118,10 @@ struct settings {
         int h_padding;
         int text_icon_padding;
         struct separator_color_data sep_color;
-        int frame_width;
+        int top_frame_width;
+        int bottom_frame_width;
+        int left_frame_width;
+        int right_frame_width;
         char *frame_color;
         int startup_notification;
         int monitor;
